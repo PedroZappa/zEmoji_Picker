@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import subprocess
 
 # ************************************************************************** //
 #                             Download db Files                              //
@@ -96,6 +97,49 @@ def save_db_as_json(db, out_filename):
   print(f"Saved db to {out_filename}")
 
 # ************************************************************************** //
+#                                   Picker                                   //
+# ************************************************************************** //
+
+def flatten_emoji_db(emoji_db):
+    """
+    Flatten the emoji database structure into a list of strings.
+    Each string is formatted as:
+      <emoji> <emoji name> [<group> / <subgroup>]
+    """
+    lines = []
+    for group, subgroups in emoji_db.items():
+        for subgroup, emojis in subgroups.items():
+            for emoji_obj in emojis:
+                # Format the line with enough context for fzf.
+                line = f"{emoji_obj['emoji']} {emoji_obj['name']} [{group} / {subgroup}]"
+                lines.append(line)
+    return lines
+
+def pick_emoji(emoji_lines):
+    """
+    Uses fzf to fuzzy-find an emoji from the list.
+    Returns the first token (the emoji glyph) of the selected line.
+    """
+    try:
+        proc = subprocess.Popen( # Run fzf as a subprocess
+            ['fzf', '--prompt', 'zEmoji > '],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        # Join all lines with newline characters
+        input_data = "\n".join(emoji_lines)
+        stdout, _ = proc.communicate(input_data)
+        selected_line = stdout.strip()
+        if selected_line:
+            # Assume the emoji glyph is the first token (separated by whitespace)
+            emoji_glyph = selected_line.split()[0]
+            return emoji_glyph
+    except Exception as e:
+        print(f"Error invoking fzf: {e}")
+    return None
+# ************************************************************************** //
 #                                    App                                     //
 # ************************************************************************** //
 
@@ -106,6 +150,15 @@ if __name__ == "__main__":
   download_file(emoji_test_url, emoji_test_filename)
   emoji_db = parse_emoji_test(emoji_test_filename)
   save_db_as_json(emoji_db, "db/emoji_db.json")
+
+  # Now load the emoji database and flatten it for picking
+  emoji_lines = flatten_emoji_db(emoji_db)
+  picked_emoji = pick_emoji(emoji_lines)
+  if picked_emoji:
+      # Print the picked emoji to stdout
+      print(f"Picked Emoji: {picked_emoji}")
+  else:
+      print("No emoji was selected.")
 
   # Handle Unicode Data
   # unicode_data_url = "https://unicode.org/Public/UCD/latest/ucd/UnicodeData.txt"
