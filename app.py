@@ -156,12 +156,12 @@ if __name__ == "__main__":
   picked_emoji = pick_emoji(emoji_lines)
   if picked_emoji:
       # Print the picked emoji to stdout
-      print(f"Picked Emoji: {picked_emoji}")
+      print(f"{picked_emoji}")
   else:
       print("No emoji was selected.")
 
   # Handle Unicode Data
-  # unicode_data_url = "https://unicode.org/Public/UCD/latest/ucd/UnicodeData.txt"
-  # unicode_data_filename = ".temp/UnicodeData.txt"
-  # download_file(unicode_data_url, unicode_data_filename)
+  unicode_data_url = "https://unicode.org/Public/UCD/latest/ucd/UnicodeData.txt"
+  unicode_data_filename = ".temp/UnicodeData.txt"
+  download_file(unicode_data_url, unicode_data_filename)
 
