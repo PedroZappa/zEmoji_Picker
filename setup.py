@@ -14,6 +14,7 @@ setup(
   ],
   install_requires=[
     "setuptools",
+    "requests",
     # "textual-dev",
   ],
   extras_require={
