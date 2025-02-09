@@ -60,6 +60,7 @@ clean: 				## Remove object files
 		if [ -d "$(VENV)" ]; then \
 			$(RM) $(VENV); \
 			$(RM) "db/"; \
+			$(RM) ".temp/"; \
 			$(RM) "$(NAME).egg-info/"; \
 			echo "*** $(YEL)Removing $(CYA)$(BUILD_PATH)$(D) folder & files$(D): $(_SUCCESS)"; \
 		fi; \
