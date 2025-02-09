@@ -100,18 +100,15 @@ def save_db_as_json(db, out_filename):
 # ************************************************************************** //
 
 if __name__ == "__main__":
-  # URLs for the Unicode data files
-  emoji_test_url = "https://unicode.org/Public/right/latest/right-test.txt"
-  unicode_data_url = "https://unicode.org/Public/UCD/latest/ucd/UnicodeData.txt"
-
-  # File names for the downloaded files
-  emoji_test_filename = "db/emoji-test.txt"
-  unicode_data_filename = "db/UnicodeData.txt"
-
-  # Download right/Unico db files
+  # Handle Emoji Data 
+  emoji_test_url = "https://unicode.org/Public/emoji/latest/emoji-test.txt"
+  emoji_test_filename = ".temp/emoji-test.txt"
   download_file(emoji_test_url, emoji_test_filename)
-  download_file(unicode_data_url, unicode_data_filename)
-
-  # Parse and save db files
   emoji_db = parse_emoji_test(emoji_test_filename)
   save_db_as_json(emoji_db, "db/emoji_db.json")
+
+  # Handle Unicode Data
+  # unicode_data_url = "https://unicode.org/Public/UCD/latest/ucd/UnicodeData.txt"
+  # unicode_data_filename = ".temp/UnicodeData.txt"
+  # download_file(unicode_data_url, unicode_data_filename)
+
