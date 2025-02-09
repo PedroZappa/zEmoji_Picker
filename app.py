@@ -276,9 +276,11 @@ if __name__ == "__main__":
   setup_database(emojis, unicode_data)
 
   # Prompt the user to pick a database
-  print("\nSelect DB:")
-  print("1 - Emoji Database (emoji_db.json)")
-  print("2 - Unicode Database (unicode_db.json)")
+  print("""
+Select DB:"
+1 - Emoji Database (emoji_db.json)
+2 - Unicode Database (unicode_db.json)
+  """)
   choice = input("Enter 1 or 2: ").strip()
 
   conn = sqlite3.connect("db/unicode.db")
@@ -289,7 +291,8 @@ if __name__ == "__main__":
           SELECT group_name, subgroup_name, emoji, name FROM emojis
       """)
     rows = cursor.fetchall()
-    lines = [f"{row[2]} {row[3]} [{row[0]} / {row[1]}]" for row in rows]
+    # lines = [f"{row[2]} {row[3]} [{row[0]} / {row[1]}]" for row in rows]
+    lines = [f"{chr(int(row[0], 16))} {row[1]} (U+{row[0]})" for row in rows]
   elif choice == "2":
     cursor.execute("""
           SELECT code_point, name FROM unicode_data
