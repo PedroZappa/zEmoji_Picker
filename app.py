@@ -3,6 +3,8 @@ import json
 import sqlite3
 import os
 import subprocess
+import codecs
+import sys
 
 # ************************************************************************** //
 #                             Download db Files                              //
@@ -230,7 +232,7 @@ def setup_database(emojis, unicode_data):
 # ************************************************************************** //
 
 
-def pick_emoji(emoji_lines):
+def pick(emoji_lines):
   try:
     proc = subprocess.Popen(
       ["fzf", "--prompt", "Select > "],
@@ -254,6 +256,8 @@ def pick_emoji(emoji_lines):
 # ************************************************************************** //
 
 if __name__ == "__main__":
+  # UTF8Writer = codecs.getwriter('utf8')
+  # sys.stdout = UTF8Writer(sys.stdout)
   # Handle Emoji Data
   emoji_test_url = "https://unicode.org/Public/emoji/latest/emoji-test.txt"
   emoji_test_filename = ".temp/emoji-test.txt"
@@ -293,15 +297,15 @@ if __name__ == "__main__":
     rows = cursor.fetchall()
     # Convert code points to the actual Unicode glyph
     # lines = [f"{chr(int(row[0], 16))} {row[1]} (U+{row[0]})" for row in rows]
-    lines = [f"U+{row[0]} {row[1]}" for row in rows]
+    lines = [f"{row[0]} {row[1]}" for row in rows]
   else:
     print("Invalid choice. Exiting.")
     exit()
 
-  picked = pick_emoji(lines)
+  picked = pick(lines)
   conn.close()
 
   if picked:
-    print(picked)
+    print(chr(int(picked, 16)))
   else:
     print("No selection made.")
